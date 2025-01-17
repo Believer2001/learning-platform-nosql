@@ -4,14 +4,18 @@
 // Question: Que se passe-t-il si une variable requise est manquante ?
 // Réponse : 
 
+const path =require('path') // pour importer le fichier .env
 const dotenv = require('dotenv');
-dotenv.config();
+
+const envPath = path.resolve(__dirname, '../../.env'); //chemin absolue du fichiier
+dotenv.config({ path: envPath });
 
 const requiredEnvVars = [
   'MONGODB_URI',
   'MONGODB_DB_NAME',
   'REDIS_URI'
 ];
+
 
 // Validation des variables d'environnement
 function validateEnv() {

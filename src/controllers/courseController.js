@@ -7,8 +7,11 @@ const { ObjectId } = require('mongodb');
 const db = require('../config/db');
 const mongoService = require('../services/mongoService');
 const redisService = require('../services/redisService');
+const express =require('express');
 
-async function createCourse(req, res) {
+
+async function createCourse(req, res) 
+{
   // TODO: Implémenter la création d'un cours
   // Utiliser les services pour la logique réutilisable
 
@@ -21,6 +24,105 @@ async function createCourse(req, res) {
     res.status(500).json({ error: 'Erreur lors de la création du cours.' }); // Gestion d'erreur
   }
 }
+
+
+
+//fonction pour getCours
+async function getCourse(req, res) {
+  try {
+    const id = req.params.id;
+    const collection =req.query.collection;
+
+    //  pour avoir l'url complete pour  enregistrer et  rechereche  
+    const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`; 
+
+    // Recherche dans le cache
+    const resultCache = await redisService.rechercheCache(fullUrl);
+
+    if (resultCache) {
+      // Si trouvé dans le cache, renvoyer directement
+      if (typeof resultCache === 'string') {
+        return res.json(JSON.parse(resultCache));
+      } else {
+        return res.json(resultCache);
+      }
+
+    }
+
+    // Sinon, chercher dans MongoDB
+    const resultMongo = await mongoService.findOneById(collection,id);
+    
+    
+    
+
+    if (!resultMongo) {
+      // Si le document n'est pas trouvé dans MongoDB
+      return res.status(404).json({ error: "Cours non trouvé" });
+    }
+
+    // Stocker le résultat dans le cache pour les futures requêtes
+    await redisService.cacheData(fullUrl, resultMongo, 200); // TTL de 1 heure
+
+    // Renvoyer la réponse depuis MongoDB
+    
+    return res.json(resultMongo);
+  } catch (error) {
+    console.error("Erreur lors de la récupération du cours:", error);
+    return res.status(500).json({ error: "Erreur serveur" });
+  }
+}
+
+
+
+
+
+//focntion getCouresStats
+
+async function getCourseStats(req,res) {
+
+  try {
+    
+
+  const collection = req.query.collection;
+
+  const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`; 
+
+  const resultCache = await redisService.rechercheCache(fullUrl);
+
+  
+  if (resultCache) {
+    // Si trouvé dans le cache, renvoyer directement
+    if (typeof resultCache === 'string') {
+      return res.json(JSON.parse(resultCache));
+    } else {
+      return res.json(resultCache);
+    }
+  }
+
+    // Sinon, chercher dans MongoDB
+    const resultMongo = await mongoService.getCourseStats(collection)
+    
+
+    if (!resultMongo) {
+      // Si le document n'est pas trouvé dans MongoDB
+      return res.status(404).json({ error: "Statistiques de ${collecion}" });
+    }
+
+    // Stocker le résultat dans le cache pour les futures requêtes
+    await redisService.cacheData(fullUrl, resultMongo, 200); // TTL de 1 heure
+
+    // Renvoyer la réponse depuis MongoDB
+    
+    return res.json(resultMongo);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des statistiques:", error);
+    return res.status(500).json({ error: "Erreur serveur" });
+  }
+}
+
+
+
+
 
 // Export des contrôleurs
 module.exports = {
