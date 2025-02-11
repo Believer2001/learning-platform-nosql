@@ -1,10 +1,62 @@
-# Projet de fin de module NoSQL
+## Projet de fin de module NoSQL
 
 Pour ce projet, vous allez créer une petite API qui va servir de backend à une plateforme d'apprentissage en ligne. J'ai préparé la structure du projet avec une organisation professionnelle du code, comme vous pouvez le constater dans ce dépôt Github.
+Pour Creation de ce backend, nous utilisons le Framework NodeJS qui nous permet d'executer JavaScript coe serveur,  nous utilisons la bibliotheque express. Notre application backend se chargera de la  communication avec une  base de donnee MongoDB pour forunir les reponses au requetes. Pour ameliorer la rapidite et la  fuidite de l'applications , nous avons prevu un mecanisme de cache qui est gerer par la base de donnee Redis.
+
+## Comment lancer ou  installer le projet ?
+
+#### Preparation de l'enviroonnement
+Pour installer le projet et l'exécuter, il faut cloner ce dépôt ou le télécharger manuellement. Une fois le document téléchargé, assurez-vous d'avoir l'environnement Node.js et le gestionnaire de packages npm installés sur la machine.
+
+- Installez la base de données Redis sur la machine.
+
+- Installez MongoDB, ou disposez d'une connection string depuis MongoDB Atlas. Dans ce dernier cas, vous devez changer l'URL de MongoDB dans les variables d'environnement par la connection string de MongoDB Atlas dans le fichier .env.
+
+- Assurez-vous que la base de données Redis, installée en local, écoute sur le port indiqué dans le fichier .env. Sinon, modifiez-le pour le port adéquat.
+
+Exécutez dans le terminal, dans le répertoire principal, la commande :
+```bash
+bash
+npm install.
+```
+#### Exemple :
+
+```bash
+bash
+learning-platform-Temple>  npm install
+```
+
+Cela permet d'installer toutes les dépendances contenues dans le fichier package.json et d'initialiser un fichier node_modules
+
+
+
+#### Démarrage du serveur.
+Dans le terminal, dans le répertoire src, tapez la commande suivante 
+```bash
+bash
+nodemon app
+```
+#### Exemple :
+```bash
+bash
+ leaning-platform-Temple/src> nodemon app
+```
+
+Cela lance automatiquement notre serveur qui écoute sur le port 3000.
+On peut alors effectuer des requêtes HTTP depuis le terminal pour obtenir des réponses.
+- Il est aussi possible de prévoir une interface en HTML qui permettra d'interagir avec le serveur.
+
+Pour ce faire, il suffit de créer un dossier public contenant les fichiers .html et .css qui serviront d'interface. Ensuite, ajoutez le middleware suivant dans le fichier app.js pour que le serveur serve les fichiers statiques
+```javascript
+Javascript
+app.use(express.static('./public'));
+```
+
 
 Commençons par l'organisation pratique :
 
-1. Création de votre dépôt :
+<!--
+1. Création de votre dépôt : 
    - Sur Github.com
    - Créez un nouveau dépôt public
    - Nommez-le "learning-platform-nosql"
@@ -32,6 +84,7 @@ Commençons par l'organisation pratique :
    ```
 
 Je vous propose une structure de code qui suit les bonnes pratiques de développement. Vous trouverez dans le code des commentaires avec des **questions qui vous guideront dans votre réflexion**. Ces questions sont importantes car elles vous aideront à comprendre les choix d'architecture.
+-->
 
 ### Aspects professionnels à noter :
 - Utilisation des variables d'environnement pour la configuration
@@ -40,7 +93,7 @@ Je vous propose une structure de code qui suit les bonnes pratiques de développ
 - Organisation modulaire du code
 - Gestion des erreurs et des cas limites
 - Documentation du code
-
+<!--
 ### Pour le rendu, voici ce que j'attends :
 1. Un dépôt public sur Github avec un historique de commits clair
 2. Un README.md qui explique :
@@ -60,7 +113,9 @@ Je vous propose une structure de code qui suit les bonnes pratiques de développ
 #### Bon courage
 
 # Reponses aux question des commentaires
+-->
 
+## Pour bien comprendre la structure de  se projet nous allons repondre a aun serie de reponse
 
 ### Question: 
 #### Quelles sont les informations sensibles à ne jamais commiter ?
@@ -166,7 +221,7 @@ La séparer les routes dans différents fichiers présente plusieurs avantages:
 
    - Organiser les routes par catégorie  permet de garder une structure modulaire. Chaque fichier de route contient uniquement les routes relatives à une fonctionnalité ou un domaine spécifique.
 
-    Collaboration, lorsque plusieurs développeurs travaillent sur le projet, séparer les routes par fichier permet à chacun de travailler sur différentes parties de l'application sans trop de conflits.
+   - Collaboration, lorsque plusieurs développeurs travaillent sur le projet, séparer les routes par fichier permet à chacun de travailler sur différentes parties de l'application sans trop de conflits.
 
 
 
@@ -207,52 +262,25 @@ Prendre en compte la cohérence des données : Assurez-vous que le cache et la b
 ### Question: 
 #### Quelles sont les bonnes pratiques pour les clés Redis ?
 ### Réponse :
-    Utilisez des clés significatives et lisibles : Choisissez des noms de clés qui sont faciles à comprendre et à identifier. Par exemple, pour un utilisateur, vous pouvez utiliser user:123 ou session:456.
+ - Utilisez des clés significatives et lisibles : Choisissez des noms de clés qui sont faciles à comprendre et à identifier. Par exemple, pour un utilisateur, vous pouvez utiliser user:123 ou session:456.
 
-    Préfixez vos clés : Utilisez des préfixes pour éviter les conflits de noms. Par exemple, pour les données utilisateur, vous pouvez utiliser user:<user_id>. Cela vous permet de mieux organiser les données et de faciliter leur gestion.
+  -  Préfixez vos clés : Utilisez des préfixes pour éviter les conflits de noms. Par exemple, pour les données utilisateur, vous pouvez utiliser user:<user_id>. Cela vous permet de mieux organiser les données et de faciliter leur gestion.
 
-    Utilisez une structure de clé hiérarchique : Au lieu de stocker des clés plates comme user123, vous pouvez utiliser des structures hiérarchiques comme user:123:name ou user:123:profile, ce qui rend les clés plus compréhensibles.
+  -  Utilisez une structure de clé hiérarchique : Au lieu de stocker des clés plates comme user123, vous pouvez utiliser des structures hiérarchiques comme user:123:name ou user:123:profile, ce qui rend les clés plus compréhensibles.
 
-    Utiliser des clés de type expiration (TTL) : Lorsque vous stockez des informations temporaires ou des sessions utilisateurs, assurez-vous que les données ont une durée de vie limitée via TTL. Cela évite de surcharger le cache avec des informations inutiles.
+   -  Utiliser des clés de type expiration (TTL) : Lorsque vous stockez des informations temporaires ou des sessions utilisateurs, assurez-vous que les données ont une durée de vie limitée via TTL. Cela évite de surcharger le cache avec des informations inutiles.
 
-    Ne pas stocker des informations sensibles sans sécurité : Si vous stockez des informations sensibles dans Redis, assurez-vous que Redis est configuré avec un mot de passe sécurisé, qu'il fonctionne sur un réseau privé et que les données sont cryptées si nécessaire.
+   - Ne pas stocker des informations sensibles sans sécurité : Si vous stockez des informations sensibles dans Redis, assurez-vous que Redis est configuré avec un mot de passe sécurisé, qu'il fonctionne sur un réseau privé et que les données sont cryptées si nécessaire.
 
 Exemple de clé Redis :
 
 Pour stocker des informations relatives à un utilisateur, vous pourriez utiliser les clés suivantes :
 
-    user:123:profile pour les informations générales du profil utilisateur.
-    user:123:sessions pour les informations de session de l'utilisateur.
-    product:456 pour un produit spécifique.
+-  user:123:profile pour les informations générales du profil utilisateur.
+-  user:123:sessions pour les informations de session de l'utilisateur.
+-  product:456 pour un produit spécifique.
 
 Ces clés sont claires, bien structurées et permettent de bien séparer les données, facilitant leur gestion et leur expiration.
 
-
-## Comment lancer installer le projet ?
-
-#### Preparation de l'enviroonnement
-Pour installer  le projet et l'executer , il faut  telecharger le   faut cloner le present depot ou le telechaarger manuellement. Une fois le document telecharge, assurer  assurez vous d'avoir l'environnment NodeJs et  le gestionnaiire de package npm installer sur la machine.
-
--> installer la base de donnee Redis sur la machine 
--> installer MongoDB, ou disposer d'uns connection string depuis Mongo atlas. Dans ce derniers cas, vous devez changer l'url de  mongo dans les varaible d'environnenmt par le connection string de Mongo atlas dans le fichier .env.
-
--> assurer vous que la base de donnee Redis installer en local a  ecoutes au port indique dans le fichier .env sinon changer le par port adequat.
-
--> on  executer dans le terminale, dans le repertoire presipal la commande.
-  npm install
-  ex: leaning-platform-Temple> npm install
-
-  cela permet d'installer tout les dependance  contenus dans le fichier package.jason, et permet d'intilaiser un fichier node_modules.
-
-#### demarrage du server.
- Dans le terminal , dans le repertoire src, tapez la commande 
- nodemon app
-
-ex: leaning-platform-Temple/src> nodemon app
-
-cela lance autoamtique nontre serveur qui ecoute sur le port 3000. 
- on peut alors effectuer des requetes http depuis le termminal   pour  obtenir les reponse.
- ->  on peut aussi prevoir une interface en html qui va permettre d'interagir avec le serveur.
- Pour ce faire on a qu' a cree un dossier public contenant les fichiers .html et/css qui vont eservir d'interface . Apres on ajoute au fichier app.js le middleware : app.use(express.static('./public')) dans la configuration des middleware.
 
 
